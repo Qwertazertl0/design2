@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 467 Design 2</title>
+  <meta name="description" content="CS 467 Design 2">
+  <meta name="author" content="Team 11">
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <div style='text-align: center;' id='eventHandler'>
+    <svg width="840" height="427" id='bars'>
+      <image href="./goal_image.png" height="427" width="840" opacity=".4"/>
+    </svg>
+  </div>
+  <script src='app.js'></script>
+
+  <select name="teams" id="options">
+    <option value='team1'>team1</option>
+    <option value='team2'>team2</option>
+  </select>
+
+</body>
+</html>
+
+<!-- {team:
+        Season: {[
+              {Shots: attribs}
+      ]}
+
+      
+} -->
