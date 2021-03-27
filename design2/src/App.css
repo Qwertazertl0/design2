@@ -1,0 +1,50 @@
+body {
+    font-family: sans-serif;
+    background-color: azure;
+}
+ 
+.title {
+    text-align: center;
+}
+
+.paragraph {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+
+.flex-container {
+  display: flex;
+  background-color: azure;
+  text-align: center;
+}
+
+.flex-container > div {
+  background-color: azure;
+  margin: 2px;
+  padding: 2px;
+  font-size: 30px;
+  text-align: center;
+}
+
+
+.horiz-flex-center {
+  display: flex;
+  align-items: center;
+}
+
+
+
+#title{
+  font-size:1.5rem;
+}
+
+
+#goal {
+  width: 700px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
