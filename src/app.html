@@ -2,45 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 467 Design</title>
-
+  <title>CS 467 Design 2</title>
+  <meta name="description" content="CS 467 Design 2">
+  <meta name="author" content="Team 11">
   <link rel="stylesheet" href="app.css">
 </head>
 
 <body>
   <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-
-  <div>
+  <div id='header'>
     <h1 class='title'> Soccer Shots Location </h1>
-    <svg width='500' height='50' class='slider' id='slider'></svg>
+    <p>
+      Description
+    </p>
   </div>
 
-  <div>
-    <h1 class='paragraph'> Description </h1>
-    <svg width='200' height='50' class='slider' id='slider'></svg>
+  <div class='center' id='eventHandler'>
+    <svg width="840" height="427" id='goal'>
+      <image href="./goal_image.png" height="427" width="840" opacity=".4"/>
+    </svg>
   </div>
 
-  <div class="center">
-    <img src="testgoalpic.jpg" id="goal" />
+  <div id="dropdowns" class="flex-container">
+    <h2 class="dropdown-label"> Team <br>
+      <select id="team-sel"></select>
+    </h2>
+    <h2 class="dropdown-label"> Season <br>
+      <select id="season-sel"></select>
+    </h2>
+    <h2 class="dropdown-label"> Shot Type <br>
+      <select id="type-sel"></select>
+    </h2>
   </div>
-
- 
-
-  <h2 class="horiz-flex-center">Team
-    <select id ="level1"></select>
-  </h2>
-  <h2 class="horiz-flex-center">Season
-    <select id ="level2"></select>
-  </h2>
-
-
-
+  
   <script src="app.js"></script>
-
-
-
 </body>
 </html>
-
-

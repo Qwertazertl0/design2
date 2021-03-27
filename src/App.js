@@ -1,74 +1,124 @@
 "use strict";
 
+const topLeftX = 130;
+const topLeftY = 70;
+const bottomRightX = 710;
+const bottomRightY = 375;
+const NO_TEAM_MSG = "(Select Team First)"
+const SHOT_TYPES = ['All', 'Corner', 'Free Kick', 'Open Play', 'Penalty', 'Kick Off']
 
+window.addEventListener("load", init);
+var shotData;
+var xScale, yScale;
 
+function selectData() {
+    let team = $("#team-sel").val();
+    if (team == '--') { return []; }
+    let season = $("#season-sel").val();
+    let type = $("#type-sel").val();
+    console.log(team, season, type)
 
-var mydata = [
-    ["England", "Season 2"],
-    ["England", "Season 3"],
-    ["England", "Season 5"],
-    ["France", "Season 1"],
-    ["France", "Season 6"],
-    ["France", "Season 7"],
-    ["US", "Season 2"],
-    ["US", "Season 4"],
-    ["US", "Season 8"]
-];
-
-
-function makeDropDown(data, level1Filter) {
-    const filteredArray = data.filter(r => r[0] === level1Filter);
-
-    const uniqueList = getUniqueValues(filteredArray, 1);
-    
-    const selectLevel2 = document.getElementById("level2");
-
-    populateDropDown(selectLevel2, uniqueList);
-    
+    let teamData = shotData[team];
+    let shotFilter = function(shots, type) {
+        if (type == 'all') { return shots; }
+        else { return shots.filter(s => s['type']['name'].toLowerCase() == type); }
+    }
+    if (season == 'all') { 
+        let allShots = Object.values(teamData).reduce((a,b) => (a.concat(b)));
+        return shotFilter(allShots, type);
+    } else { return shotFilter(teamData[season], type); }
 }
 
-function applyDropDown() {
-    const selectLevel1Value = document.getElementById("level1").value;
-    makeDropDown(mydata, selectLevel1Value)
+function getXCoord(endLoc) { return endLoc[1]; }
+function getYCoord(endLoc) { return (endLoc.length > 2 ? endLoc[2] : 0); }
+
+function updateShots() {
+    let data = selectData()
+    const svg = d3.select("svg");
+    svg.selectAll("circle")
+        .data(data)
+        .join(
+            enterSelection => {
+                enterSelection.append("circle")
+                    .attr("cx", d => xScale(getXCoord(d['end_location'])))
+                    .attr("cy", d => yScale(getYCoord(d['end_location'])))
+                    .attr("r", 10)
+                    .attr("opacity", 0)
+                    .transition()
+                        .duration(500)
+                        .attr("opacity", 1);
+            },
+            updateSelection => {
+                updateSelection.transition()
+                    .duration(500)
+                    .attr("cx", d => xScale(getXCoord(d['end_location'])))
+                    .attr("cy", d => yScale(getYCoord(d['end_location'])))
+            },
+            exitSelection => {
+                exitSelection.transition()
+                    .duration(500)
+                    .attr('opacity', 0)
+                    .remove();
+            }
+        );
 }
 
+function init() {
+    // data to SVG coordinate transforms
+    xScale = d3.scaleLinear()
+        .domain([36, 44])
+        .range([topLeftX, bottomRightX]);
+    yScale = d3.scaleLinear()
+        .domain([2.67, 0])
+        .range([topLeftY, bottomRightY]);
 
-function afterDocumentLoads() {
-    populateFirstLevelDropDown();
-    applyDropDown();
+    // data loading and handling
+    d3.json('http://localhost:12345/src/test.json')
+        .then(function(data) {
+            console.log(data);
+            shotData = data;
+
+            // Populate dropdowns
+            let teams = Object.keys(data);
+            $("#team-sel").append(new Option('-- No Team Selected --', '--'));
+            teams.forEach(function(teamOption) {
+                $("#team-sel").append(new Option(teamOption, teamOption.toLowerCase()))
+            });
+            $("#season-sel").append(new Option(NO_TEAM_MSG, ''));
+            $("#type-sel").append(new Option(NO_TEAM_MSG, ''));
+
+            // Set-up Handlers
+            $("#team-sel").on('change', function(event) {
+                teamSelectionHandler();
+                updateShots()
+            });
+            $("#season-sel").on('change', updateShots);
+            $("#type-sel").on('change', updateShots);
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
 }
 
-
-function getUniqueValues(data, index) {
-    const uniqueOptions = new Set();
-    data.forEach(r => uniqueOptions.add(r[index]));
-    return [...uniqueOptions];
-    
+function teamSelectionHandler() {
+    let selTeam = $("#team-sel").val();
+    console.log(selTeam);
+    $("#season-sel").empty();
+    if (selTeam == '--') {
+        $("#type-sel").empty()
+        $("#season-sel").append(new Option(NO_TEAM_MSG, ''));
+        $("#type-sel").append(new Option(NO_TEAM_MSG, ''));
+    } else {
+        $("#season-sel").append(new Option('All', 'all'))
+        Object.keys(shotData[selTeam]).forEach(function(season) {
+            $("#season-sel").append(new Option(season, season.toLowerCase()))
+        });
+        if ($("#type-sel").length == 1) {
+            $("#type-sel").empty()
+            SHOT_TYPES.forEach(function(shot) {
+                $("#type-sel").append(new Option(shot, shot.toLowerCase()))
+            });
+        }
+    }
 }
-
-function populateFirstLevelDropDown() {
-    const uniqueList = getUniqueValues(mydata, 0);
-    const element = document.getElementById("level1");
-
-    populateDropDown(element, uniqueList);
-
-    
-}
-
-function populateDropDown(element, listAsArray) {
-    element.innerHTML = "";
-    
-    listAsArray.forEach(item => {
-        const option = document.createElement("option");
-        option.textContent = item;
-        element.appendChild(option);
-    });
-}
-
-
-document.getElementById("level1").addEventListener("change", applyDropDown);
-document.addEventListener("DOMContentLoaded", afterDocumentLoads);
-
-
-
 
