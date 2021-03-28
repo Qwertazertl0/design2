@@ -20,10 +20,10 @@ function selectData() {
 
     let teamData = shotData[team];
     let shotFilter = function(shots, type) {
-        if (type == 'all') { return shots; }
-        else { return shots.filter(s => s['type']['name'].toLowerCase() == type); }
+        if (type == 'All') { return shots; }
+        else { return shots.filter(s => s['type']['name'] == type); }
     }
-    if (season == 'all') { 
+    if (season == 'All') { 
         let allShots = Object.values(teamData).reduce((a,b) => (a.concat(b)));
         return shotFilter(allShots, type);
     } else { return shotFilter(teamData[season], type); }
@@ -31,6 +31,11 @@ function selectData() {
 
 function getXCoord(endLoc) { return endLoc[1]; }
 function getYCoord(endLoc) { return (endLoc.length > 2 ? endLoc[2] : 0); }
+function encodeColor(shot) {
+    let outcome = shot['outcome'];
+    return (outcome['name'] == 'Goal' ? 'red' : 'black')
+}
+function encodeOpacity(shot) { return shot['statsbomb_xg']; }
 
 function updateShots() {
     let data = selectData()
@@ -42,17 +47,20 @@ function updateShots() {
                 enterSelection.append("circle")
                     .attr("cx", d => xScale(getXCoord(d['end_location'])))
                     .attr("cy", d => yScale(getYCoord(d['end_location'])))
-                    .attr("r", 10)
+                    .attr("r", 5)
                     .attr("opacity", 0)
                     .transition()
                         .duration(500)
-                        .attr("opacity", 1);
+                        .attr("opacity", d => encodeOpacity(d))
+                        .attr("fill", d => encodeColor(d))
             },
             updateSelection => {
                 updateSelection.transition()
                     .duration(500)
                     .attr("cx", d => xScale(getXCoord(d['end_location'])))
                     .attr("cy", d => yScale(getYCoord(d['end_location'])))
+                    .attr("opacity", d => encodeOpacity(d))
+                    .attr("fill", d => encodeColor(d))
             },
             exitSelection => {
                 exitSelection.transition()
@@ -81,8 +89,8 @@ function init() {
             // Populate dropdowns
             let teams = Object.keys(data);
             $("#team-sel").append(new Option('-- No Team Selected --', '--'));
-            teams.forEach(function(teamOption) {
-                $("#team-sel").append(new Option(teamOption, teamOption.toLowerCase()))
+            teams.sort().forEach(function(teamOption) {
+                $("#team-sel").append(new Option(teamOption, teamOption))
             });
             $("#season-sel").append(new Option(NO_TEAM_MSG, ''));
             $("#type-sel").append(new Option(NO_TEAM_MSG, ''));
@@ -102,21 +110,20 @@ function init() {
 
 function teamSelectionHandler() {
     let selTeam = $("#team-sel").val();
-    console.log(selTeam);
     $("#season-sel").empty();
     if (selTeam == '--') {
         $("#type-sel").empty()
         $("#season-sel").append(new Option(NO_TEAM_MSG, ''));
         $("#type-sel").append(new Option(NO_TEAM_MSG, ''));
     } else {
-        $("#season-sel").append(new Option('All', 'all'))
-        Object.keys(shotData[selTeam]).forEach(function(season) {
-            $("#season-sel").append(new Option(season, season.toLowerCase()))
+        $("#season-sel").append(new Option('All', 'All'))
+        Object.keys(shotData[selTeam]).sort().forEach(function(season) {
+            $("#season-sel").append(new Option(season, season))
         });
-        if ($("#type-sel").length == 1) {
+        if ($("#type-sel").children().length == 1) {
             $("#type-sel").empty()
             SHOT_TYPES.forEach(function(shot) {
-                $("#type-sel").append(new Option(shot, shot.toLowerCase()))
+                $("#type-sel").append(new Option(shot, shot))
             });
         }
     }
