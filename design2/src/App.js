@@ -1,8 +1,5 @@
 "use strict";
 
-
-
-
 var mydata = [
     ["England", "Season 2"],
     ["England", "Season 3"],
