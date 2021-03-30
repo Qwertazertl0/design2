@@ -5,7 +5,7 @@
   <title>CS 467 Design 2</title>
   <meta name="description" content="CS 467 Design 2">
   <meta name="author" content="Team 11">
-  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="App.css">
 </head>
 
 <body>
@@ -13,13 +13,26 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   <div id='header'>
-    <h1 class='title'> Soccer Shots Location </h1>
-    <p>
-      Description
-    </p>
+    <h1 class='title'> Soccer Shots: Location and Coversion </h1>
   </div>
 
   <div class='center' id='eventHandler'>
+    <text> 
+      Our design helps the viewer visualize shot location and conversion on a regulation sized soccer goal post. <br><br> 
+
+      Each shot is denoted by a point drawn on the goalpost. <br> 
+      <span style="color: #ff0000; text-decoration: underline">Red</span> points are used to visualize shots that ended up in goal, while <br> 
+      <span style="color: #222222; text-decoration: underline"">Black</span> points are used for shots that were saved or were off-target. <br><br> 
+      
+      The <span style="text-decoration: underline"">opacity</span> of a point denotes its xG statistic. xG, or eXpectedGoals, is a popular metric used to measure the likelihood of scoring from a shot. <br> 
+      Easier chances have higher xG (more solid), while harder chances have lower xG (more transparent).<br><br> 
+
+      You can start by selecting a team. By default all available data is displayed, but you can choose to filter based on season (year) and shot type. 
+    </text>
+    
+    <br>
+    <br>
+    
     <svg width="840" height="427" id='goal'>
       <image href="./goal_image.png" height="427" width="840" opacity=".4"/>
     </svg>
@@ -43,6 +56,12 @@
     <svg width="200" height="30">
       <image href="./statsbomb-logo.jpg" width="200" height="30"/>
     </svg>
+    
+    <br><br>
+    
+    <text style="font-size:11px"> 
+      The user should note that the dataset is incomplete and may not contain data for all shots taken by their favorite team.
+    </text>
   </div>
   
   <script src="app.js"></script>
