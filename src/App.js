@@ -81,7 +81,7 @@ function init() {
         .range([topLeftY, bottomRightY]);
 
     // data loading and handling
-    d3.json('http://localhost:12345/src/shots_v2.json')
+    d3.json('http://localhost:12345/data/shots_v2.json')
         .then(function(data) {
             console.log(data);
             shotData = data;
