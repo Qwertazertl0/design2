@@ -16,7 +16,7 @@ function selectData() {
     if (team == '--') { return []; }
     let season = $("#season-sel").val();
     let type = $("#type-sel").val();
-    console.log(team, season, type)
+    // console.log(team, season, type)
 
     let teamData = shotData[team];
     let shotFilter = function(shots, type) {
@@ -40,7 +40,7 @@ function encodeOpacity(shot) { return shot['statsbomb_xg']; }
 function updateShots() {
     let data = selectData()
     const svg = d3.select("svg#goal");
-    console.log(data)
+    // console.log(data)
     svg.selectAll("circle")
         .data(data)
         .join(
@@ -92,14 +92,16 @@ function init() {
     // data loading and handling
     d3.json('http://localhost:12345/data/shots_v3.json')
         .then(function(data) {
-            console.log(data);
+            // console.log(data);
             shotData = data;
 
             // Populate dropdowns
             let teams = Object.keys(data);
             $("#team-sel").append(new Option('-- No Team Selected --', '--'));
             teams.sort().forEach(function(teamOption) {
-                $("#team-sel").append(new Option(teamOption, teamOption))
+                if (teamOption != 'Barcelona') {
+                    $("#team-sel").append(new Option(teamOption, teamOption))
+                }
             });
             $("#season-sel").append(new Option(NO_TEAM_MSG, ''));
             $("#type-sel").append(new Option(NO_TEAM_MSG, ''));
@@ -160,8 +162,13 @@ function buildYScale(svg, max) {
 }
 
 function buildYAxis(svg) {
+    let axis = d3.axisLeft(yForScale)
+    if (yForScale.ticks().length > Math.max(...yForScale.ticks()) + 1) {
+        axis = d3.axisLeft(yForScale)
+            .ticks(Math.max(...yForScale.ticks()), "d")
+    }
     svg.append("g")
-        .call(d3.axisLeft(yForScale))
+        .call(axis)
         .attr("transform", `translate(${padding.left} , 0)`);
 }
 
@@ -212,15 +219,38 @@ function baseBarChart() {
     addXAxisLabel(svg, X_LABELS['time'])
 }
 
-function drawBars(svg, data, scale, labels) {
+function drawBars(svg, data, scale) {
     svg.selectAll("rect")
         .data(data)
-        .join("rect")
-            .attr("x", d => scale(d['key']))
-            .attr("y", d => yForScale(d['count']))
-            .attr("width", scale.bandwidth())
-            .attr("height", d => (svg.attr("height") - yForScale(d['count']) - padding.bottom))
-            .attr("fill", "black")
+        .join(
+            enterSelection => {
+                enterSelection.append("rect")
+                    .attr("x", d => scale(d['key']))
+                    .attr("y", svg.attr("height") - padding.bottom)
+                    .attr("width", scale.bandwidth())
+                    .attr("height", 0)
+                    .attr("fill", "black")
+                    .transition()
+                        .duration(200)
+                        .attr("y", d => yForScale(d['count']))
+                        .attr("height", d => (svg.attr("height") - yForScale(d['count']) - padding.bottom))
+            },
+            updateSelection => {
+                updateSelection.transition()
+                    .duration(200)
+                    .attr("x", d => scale(d['key']))
+                    .attr("width", scale.bandwidth())
+                    .attr("y", d => yForScale(d['count']))
+                    .attr("height", d => (svg.attr("height") - yForScale(d['count']) - padding.bottom))
+            },
+            exitSelection => {
+                exitSelection.transition()
+                    .duration(200)
+                    .attr("y", svg.attr("height") - padding.bottom)
+                    .attr('height', 0)
+                    .remove();
+            }
+        );
 }
 
 function updateBarchart(data) {    
@@ -242,17 +272,17 @@ function updateBarchart(data) {
     if (mode == 'time') {
         buildXAxis(svg, xForTime)
         addYAxisLabel(svg, GOALS_LABEL)
-        drawBars(svg, aggregateData, xForTime, TIME)
+        drawBars(svg, aggregateData, xForTime)
     }
     if (mode == 'technique') {
         buildXAxis(svg, xForTechnique)
         addYAxisLabel(svg, SHOTS_LABEL)
-        drawBars(svg, aggregateData, xForTechnique, TECHNIQUE)
+        drawBars(svg, aggregateData, xForTechnique)
     }
     if (mode == 'bodypart') {
         buildXAxis(svg, xForBodyPart)
         addYAxisLabel(svg, SHOTS_LABEL)
-        drawBars(svg, aggregateData, xForBodyPart, BODYPART)
+        drawBars(svg, aggregateData, xForBodyPart)
     }
 }
 
