@@ -134,21 +134,6 @@ function init() {
         .range([topLeftY, bottomRightY]);
 
     // data loading and handling
-    d3.json('http://localhost:12345/data/assist_zones_barcelona_clean.json')
-    .then(function(data) {
-        // console.log("zone data:", data);
-        zoneData = data;
-
-         // Set-up Handlers
-         $("#assists-season-sel").on('change', function(event) {
-            updateZones()
-        });
-        updateZones()
-    })
-    .catch(function(err) {
-        console.log(err);
-    });
-
     d3.json('http://localhost:12345/data/assists_barcelona_clean.json')
         .then(function(data) {
             // console.log("assist data:", data);
@@ -167,6 +152,21 @@ function init() {
             });
 
             updateAssists()
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+
+    d3.json('http://localhost:12345/data/assist_zones_barcelona_clean.json')
+        .then(function(data) {
+            // console.log("zone data:", data);
+            zoneData = data;
+
+            // Set-up Handlers
+            $("#assists-season-sel").on('change', function(event) {
+                updateZones()
+            });
+            updateZones()
         })
         .catch(function(err) {
             console.log(err);
