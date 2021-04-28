@@ -11,13 +11,13 @@
     },
     "team2": {
         "season9": [
-            {"end_location": [120.0, 38],
+            {"end_location": [120.0, 44],
                 "technique": {"name": "Normal", "id": 93},
                 "type": {"name": "Penalty", "id": 88},
                 "outcome": {"name": "Goal", "id": 97},
                 "body_part": {"name": "Left Foot", "id": 38},
                 "statsbomb_xg": 0.76},
-            {"end_location": [120.0, 37, 1.2],
+            {"end_location": [120.0, 36, 2.67],
                 "technique": {"name": "Normal", "id": 93},
                 "type": {"name": "Free Kick", "id": 88},
                 "outcome": {"name": "Goal", "id": 97},

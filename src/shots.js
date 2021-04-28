@@ -1,25 +1,13 @@
 "use strict";
 
-const topLeftX = 130;
-const topLeftY = 70;
-const bottomRightX = 710;
-const bottomRightY = 375;
+const topLeftX = 93;
+const topLeftY = 47;
+const bottomRightX = 535;
+const bottomRightY = 285;
 const NO_TEAM_MSG = "(Select Team First)"
 const SHOT_TYPES = ['All', 'Corner', 'Free Kick', 'Open Play', 'Penalty', 'Kick Off']
 
 window.addEventListener("load", init);
-
-
-//var container = document.getElementById('first');
-//var list = container.getElementsByTagName('#button');
-
-//let buttonid = $("#time")
-
-//button.addEventListener("click", f);
-
-
-
-
 var shotData;
 var xScale, yScale;
 
@@ -85,13 +73,13 @@ function updateShots() {
 }
 
 function init() {
+    // Initialize barchart
     $("#time").on('click', updateShots)
     $("#technique").on('click', updateShots)
     $("#bodypart").on('click', updateShots)
-
-    //set mode to time
     $("#time")[0].checked = true
-    //time.checked = true
+    baseBarChart()
+
     // data to SVG coordinate transforms
     xScale = d3.scaleLinear()
         .domain([36, 44])
@@ -101,7 +89,7 @@ function init() {
         .range([topLeftY, bottomRightY]);
 
     // data loading and handling
-    d3.json('http://localhost:12345/data/shots_v2.json')
+    d3.json('http://localhost:12345/data/shots_v3.json')
         .then(function(data) {
             console.log(data);
             shotData = data;
@@ -150,367 +138,149 @@ function teamSelectionHandler() {
 }
 
 
-//BARCHART
+// BARCHART
 
-const padding = { top: 50, left: 50, right: 50, bottom: 50 }
+const padding = { top: 20, left: 50, right: 50, bottom: 50 }
+const TIME = ["0-15", "15-30", "30-45", "45-60", "60-75", "75-90"];
+const BODYPART = ['Head', 'Left Foot', 'Right Foot', 'Other']
+const TECHNIQUE = ['Backheel', 'Volley', 'Diving Header', 'Lob', 'Half Volley', 'Normal', 'Overhead Kick']
+const SHOTS_LABEL = "Number of Shots"
+const GOALS_LABEL = "Number of Goals"
+const X_LABELS = {'time':'Time of Goal', 'technique':'Technique Used', 'bodypart':'Body Part Used'}
+var xForTime, xForTechnique, xForBodyPart;
+var yForScale;
 
-//($('#button')).addEventListener("click", updateBarchart, false);
+// Axis functions
 
-window.addEventListener("load", baseBarChart);
-
-//maxShots finds new max for yaxis based on new 'counts'
-function maxShots(data) {
-    let current = 0;
-    for(let i = 0; i < Object.keys(data).length; i++) {
-        if (data[i]['count'] > current) {
-            current = data[i]['count']
-        }
-    }
-    if (current == 0) {
-        current = 1
-    }
-    return current;
+function buildYScale(svg, max) {
+    return d3.scaleLinear()
+        .domain([0, max])
+        .range([svg.attr("height") - padding.bottom, 0 + padding.top]);
 }
 
-
-function baseBarChart() {
-    const svg = d3.select('#barchart');
-    const TIMEBASE = ["15", "30", "45", "60", "75", "90"];
-    // TODO: get mode selection; $("#id")
-    const xForTime = d3.scaleBand()
-        .domain(TIMEBASE)
-        .range([0 + padding.left, svg.attr("width") - padding.right]) // TODO
-        .padding(0.5);
-
-    var yForNumber = d3.scaleLinear()
-        .domain([0, 15]) // TODO
-        .range([svg.attr("height") - padding.top, 0 + padding.bottom]);
-    
-    
-    var yAxis = svg.append("g")
-        .call(d3.axisLeft(yForNumber))
+function buildYAxis(svg) {
+    svg.append("g")
+        .call(d3.axisLeft(yForScale))
         .attr("transform", `translate(${padding.left} , 0)`);
-    const xAxis = svg.append("g")
-        .call(d3.axisBottom(xForTime)) // d3 creates a bunch of elements inside the <g>
-        .attr("transform", `translate(0, ${svg.attr("height") - padding.bottom})`); 
+}
 
+function addYAxisLabel(svg, text) {
     svg.append("text")
-        .attr("font-size", 14) // This code duplication signals that these properties
-        .attr("font-weight", "bold") // should be moved to CSS. For now, the code is this
-        .attr("font-family", "sans-serif") // way to simplify our directions to you.
+        .attr("class", 'axis-labels')
         .attr("transform", `translate(${padding.left/3}, ${svg.attr("height")/2}) rotate(-90)`)
-        .style("text-anchor", "middle")
-        .text("Number of Shots"); 
+        .text(text);
+}
+
+function buildXAxis(svg, scale) {
+    svg.append("g")
+        .call(d3.axisBottom(scale)) 
+        .attr("transform", `translate(0, ${svg.attr("height") - padding.bottom})`); 
+}
+
+function addXAxisLabel(svg, text) {
     svg.append("text")
-        .attr("font-size", 14)
-        .attr("font-weight", "bold")
-        .attr("font-family", "sans-serif")
+        .attr("class", 'axis-labels')
         .attr("x", svg.attr("width")/2)
         .attr("y", svg.attr("height")-(padding.bottom/3))
-        .style("text-anchor", "middle")
-        .text("Time Goal"); 
+        .text(text); 
 }
 
+function clearAxes() {
+    d3.select('svg#barchart').selectAll('text').remove()
+    d3.select('svg#barchart').selectAll('g').remove()
+}
 
+function baseBarChart() {
+    let svg = d3.select('#barchart');
+
+    // Build axes
+    let buildXScale = function(labels) {
+        return d3.scaleBand()
+            .domain(labels)
+            .range([0 + padding.left, svg.attr("width") - padding.right])
+            .padding(0.5);
+    }
+    xForTime = buildXScale(TIME)
+    xForTechnique = buildXScale(TECHNIQUE)
+    xForBodyPart = buildXScale(BODYPART)
+
+    yForScale = buildYScale(svg, 15)
+    buildYAxis(svg)
+    buildXAxis(svg, xForTime)
+    addYAxisLabel(svg, SHOTS_LABEL)
+    addXAxisLabel(svg, X_LABELS['time'])
+}
+
+function drawBars(svg, data, scale, labels) {
+    svg.selectAll("rect")
+        .data(data)
+        .join("rect")
+            .attr("x", d => scale(d['key']))
+            .attr("y", d => yForScale(d['count']))
+            .attr("width", scale.bandwidth())
+            .attr("height", d => (svg.attr("height") - yForScale(d['count']) - padding.bottom))
+            .attr("fill", "black")
+}
 
 function updateBarchart(data) {    
-    const svg = d3.select('#barchart');
-    const TIME = ["0-15", "16-30", "31-45", "46-60", "61-75", "76-90"];
-    const BODYPART = ['Head', 'Left Foot', 'Right Foot', 'Other']
-    const TECHNIQUE = ['Backheel', 'Diving Header', 'Half Volley', 'Lob', 'Normal', 'Overhead Kick', 'Volley']
-    // TODO: get mode selection; $("#id")
+    let svg = d3.select('#barchart');
 
-    var mode = "time"
-    
-    
-    if ($("#time")[0].checked == true) {
-        mode = 'time'
-    }
-    if ($("#bodypart")[0].checked == true) {
-        mode = 'bodypart'
-    }
-    if ($("#technique")[0].checked == true) {
-        mode = 'technique'
-    }
+    let mode = "time"
+    if ($("#time")[0].checked == true) { mode = 'time' }
+    if ($("#bodypart")[0].checked == true) { mode = 'bodypart' }
+    if ($("#technique")[0].checked == true) { mode = 'technique' }
 
-    let aggregateData = aggregate(data, mode) // TODO: use mode variable
-
-    let maxnumber = maxShots(aggregateData)
-
-
-    //TIME MODE#######################
+    clearAxes()
+    let aggregateData = aggregate(data, mode)
+    let maxnumber = Math.max(...aggregateData.map(d => d['count']))
+    yForScale = buildYScale(svg, maxnumber)
+    buildYAxis(svg)
+    addXAxisLabel(svg, X_LABELS[mode])
 
     if (mode == 'time') {
-        const xForTime = d3.scaleBand()
-            .domain(TIME)
-            .range([0 + padding.left, svg.attr("width") - padding.right]) 
-            .padding(0.5);
-
-        var yForNumber = d3.scaleLinear()
-            .domain([0, maxnumber]) 
-            .range([svg.attr("height") - padding.top, 0 + padding.bottom]);
-                
-        d3.select('svg#barchart').selectAll('text').remove()
-        d3.select('svg#barchart').selectAll('g').remove()
-        var yAxis = svg.append("g")
-            .call(d3.axisLeft(yForNumber))
-            .attr("transform", `translate(${padding.left} , 0)`);
-        const xAxis = svg.append("g")
-            .call(d3.axisBottom(xForTime)) 
-            .attr("transform", `translate(0, ${svg.attr("height") - padding.bottom})`); 
-
-        svg.append("text")
-            .attr("font-size", 14) 
-            .attr("font-weight", "bold") 
-            .attr("font-family", "sans-serif") 
-            .attr("transform", `translate(${padding.left/3}, ${svg.attr("height")/2}) rotate(-90)`)
-            .style("text-anchor", "middle")
-            .text("Number of Shots"); 
-        svg.append("text")
-            .attr("font-size", 14)
-            .attr("font-weight", "bold")
-            .attr("font-family", "sans-serif")
-            .attr("x", svg.attr("width")/2)
-            .attr("y", svg.attr("height")-(padding.bottom/3))
-            .style("text-anchor", "middle")
-            .text("Time of Goal");   
-        svg.selectAll("rect")
-            .data(aggregateData) // (Hardcoded) only Urbana’s data
-            .join("rect")
-                .attr("x", (dataPoint, i) => xForTime(TIME[i])) // i is dataPoint’s index in the data array
-                .attr("y", (dataPoint, i) => yForNumber(dataPoint['count']))
-                .attr("width", (dataPoint, i) => xForTime.bandwidth())
-                .attr("height", (dataPoint, i) => (svg.attr("height") - yForNumber(dataPoint['count']) - padding.bottom))
-                .attr("fill", "black")
+        buildXAxis(svg, xForTime)
+        addYAxisLabel(svg, GOALS_LABEL)
+        drawBars(svg, aggregateData, xForTime, TIME)
     }
-    //TECHNIQUE MODE##########################
     if (mode == 'technique') {
-        const xForTechnique = d3.scaleBand()
-            .domain(TECHNIQUE)
-            .range([0 + padding.left, svg.attr("width") - padding.right]) 
-            .padding(0.5);
-        var yForTechnique = d3.scaleLinear()
-            .domain([0, maxnumber]) 
-            .range([svg.attr("height") - padding.top, 0 + padding.bottom]);
-                
-        d3.select('svg#barchart').selectAll('text').remove()
-        d3.select('svg#barchart').selectAll('g').remove()
-        var yAxis = svg.append("g")
-            .call(d3.axisLeft(yForTechnique))
-            .attr("transform", `translate(${padding.left} , 0)`);
-        const xAxis = svg.append("g")
-            .call(d3.axisBottom(xForTechnique)) 
-            .attr("transform", `translate(0, ${svg.attr("height") - padding.bottom})`); 
-
-        svg.append("text")
-            .attr("font-size", 14) 
-            .attr("font-weight", "bold") 
-            .attr("font-family", "sans-serif") 
-            .attr("transform", `translate(${padding.left/3}, ${svg.attr("height")/2}) rotate(-90)`)
-            .style("text-anchor", "middle")
-            .text("Number of Shots"); 
-        svg.append("text")
-            .attr("font-size", 14)
-            .attr("font-weight", "bold")
-            .attr("font-family", "sans-serif")
-            .attr("x", svg.attr("width")/2)
-            .attr("y", svg.attr("height")-(padding.bottom/3))
-            .style("text-anchor", "middle")
-            .text("Technique Used");   
-        svg.selectAll("rect")
-            .data(aggregateData) // (Hardcoded) only Urbana’s data
-            .join("rect")
-                .attr("x", (dataPoint, i) => xForTechnique(TECHNIQUE[i])) // i is dataPoint’s index in the data array
-                .attr("y", (dataPoint, i) => yForTechnique(dataPoint['count']))
-                .attr("width", (dataPoint, i) => xForTechnique.bandwidth())
-                .attr("height", (dataPoint, i) => (svg.attr("height") - yForTechnique(dataPoint['count']) - padding.bottom))
-                .attr("fill", "black")
+        buildXAxis(svg, xForTechnique)
+        addYAxisLabel(svg, SHOTS_LABEL)
+        drawBars(svg, aggregateData, xForTechnique, TECHNIQUE)
     }
-
-    //MODE BODY PART###########################
     if (mode == 'bodypart') {
-        const xForBodyPart = d3.scaleBand()
-            .domain(BODYPART)
-            .range([0 + padding.left, svg.attr("width") - padding.right]) 
-            .padding(0.5);
-        var yForBodyPart = d3.scaleLinear()
-            .domain([0, maxnumber]) 
-            .range([svg.attr("height") - padding.top, 0 + padding.bottom]);
-
-        d3.select('svg#barchart').selectAll('text').remove()
-        d3.select('svg#barchart').selectAll('g').remove()
-        
-        var yAxis = svg.append("g")
-            .call(d3.axisLeft(yForBodyPart))
-            .attr("transform", `translate(${padding.left} , 0)`);
-        const xAxis = svg.append("g")
-            .call(d3.axisBottom(xForBodyPart)) 
-            .attr("transform", `translate(0, ${svg.attr("height") - padding.bottom})`); 
-                
-
-
-        svg.append("text")
-            .attr("font-size", 14) 
-            .attr("font-weight", "bold") 
-            .attr("font-family", "sans-serif") 
-            .attr("transform", `translate(${padding.left/3}, ${svg.attr("height")/2}) rotate(-90)`)
-            .style("text-anchor", "middle")
-            .text("Number of Shots"); 
-        svg.append("text")
-            .attr("font-size", 14)
-            .attr("font-weight", "bold")
-            .attr("font-family", "sans-serif")
-            .attr("x", svg.attr("width")/2)
-            .attr("y", svg.attr("height")-(padding.bottom/3))
-            .style("text-anchor", "middle")
-            .text("Body Part Used");   
-        svg.selectAll("rect")
-            .data(aggregateData) // (Hardcoded) only Urbana’s data
-            .join("rect")
-                .attr("x", (dataPoint, i) => xForBodyPart(BODYPART[i])) // i is dataPoint’s index in the data array
-                .attr("y", (dataPoint, i) => yForBodyPart(dataPoint['count']))
-                .attr("width", (dataPoint, i) => xForBodyPart.bandwidth())
-                .attr("height", (dataPoint, i) => (svg.attr("height") - yForBodyPart(dataPoint['count']) - padding.bottom))
-                .attr("fill", "black")
+        buildXAxis(svg, xForBodyPart)
+        addYAxisLabel(svg, SHOTS_LABEL)
+        drawBars(svg, aggregateData, xForBodyPart, BODYPART)
     }
-
-
-
 }
 
-function timeConvert(time) {
-    let [t, decimal] = time.split('.')
-    let [h, m, s] = t.split(':');
-    var numbert = m + '.' + s
-    return Number(numbert)
-
-}
-
-/**
- * input: [{keys:values, 'timestamp':blah},{}], mode
- * output: [{'time': 15, 'count': ##},{...},{},{},{},{}]
- */
 function aggregate(data, mode) {
-    console.log(data)
-    // mode = 'time'
-
-    // Example shot:
-    // body_part: {id: 38, name: "Left Foot"}
-    // end_location: (3) [120, 48.1, 2.7]
-    // first_time: true
-    // key_pass_id: "b4bfb05d-f2e0-43d2-a844-49a96cec802f"
-    // outcome: {id: 98, name: "Off T"}
-    // statsbomb_xg: 0.4365348
-    // team: "Cádiz"
-    // technique: {id: 91, name: "Half Volley"}
-    // timestamp: "00:08:52.321"
-    // type: {id: 87, name: "Open Play"}
-    if (mode == 'time') {
-        var dict = [
-            {'time': 15, 'count' : 0},
-            {'time': 30,'count' : 0},
-            {'time': 45, 'count' : 0},
-            {'time': 60, 'count' : 0},
-            {'time': 75, 'count' : 0},
-            {'time': 90, 'count' : 0},
-    
-        ];
-    }
-    if (mode == 'bodypart') {
-        var dict = [
-            {'bodypart': 'head', 'count' : 0},
-            {'bodypart': 'leftfoot','count' : 0},
-            {'bodypart': 'rightfoot', 'count' : 0},
-            {'bodypart': 'other', 'count' : 0}
-        ];
-    }
-    if (mode == 'technique') {
-        var dict = [
-            {'technique': 'backheel', 'count' : 0},
-            {'technique': 'diving header','count' : 0},
-            {'technique': 'halfvolley', 'count' : 0},
-            {'technique': 'lob', 'count' : 0},
-            {'technique': 'normal', 'count' : 0},
-            {'technique': 'overhead kick', 'count' : 0},
-            {'technique': 'volley', 'count' : 0}
-        ];    
-    }
-
-    console.log(Object.keys(data).length)
+    let keys = null;
+    if (mode == 'time') { keys = TIME; }
+    if (mode == 'bodypart') { keys = BODYPART; }
+    if (mode == 'technique') { keys = TECHNIQUE; }
+    let dict = {}
+    keys.forEach(k => dict[k] = 0)
 
     for(var i = 0; i < Object.keys(data).length; i++) {
         if (mode == 'time') {
             if (data[i]['timestamp'] != null) {
-                var timestamp = data[i]['timestamp']
-                var outcome = data[i]['outcome']['name']
-
-                var ntime = timeConvert(timestamp)
-
-                if (outcome == 'Goal') {
-                    if (ntime <= 15) {
-                        dict[0]['count'] += 1
-                    }
-                    if (15 < ntime && ntime <= 30) {
-                        dict[1]['count'] += 1
-                    }
-                    if (30.00 < ntime && ntime <= 45.00) {
-                        dict[2]['count'] += 1
-                    }
-                    if (45.00 < ntime && ntime <= 60.00) {
-                        dict[3]['count'] += 1
-                    }
-                    if (60.00 < ntime && ntime <= 75.00) {
-                        dict[4]['count'] += 1
-                    }
-                    if (75.00 < ntime && ntime <= 90.00) {
-                        dict[5]['count'] += 1
-                    }
+                let ntime = data[i]['timestamp']
+                if (data[i]['outcome']['name'] == 'Goal') {
+                    let index = Math.min(Math.trunc(ntime / 15), 5)
+                    dict[keys[index]] += 1
                 }
             }
         }
         if (mode == 'bodypart') {
-
-            if (data[i]['body_part']['name'] == 'Head') {
-                dict[0]['count'] += 1
-            }
-            if (data[i]['body_part']['name'] == 'Left Foot') {
-                dict[1]['count'] += 1
-            }
-            if (data[i]['body_part']['name'] == 'Right Foot') {
-                dict[2]['count'] += 1
-            }
-            if (data[i]['body_part']['name'] == 'Other') {
-                dict[3]['count'] += 1
-            }
+            let bodyPart = data[i]['body_part']['name']
+            dict[bodyPart] += 1
         }
         if (mode == 'technique') {
-
-            if (data[i]['technique']['name'] == 'Backheel') {
-                dict[0]['count'] += 1
-            }
-            if (data[i]['technique']['name'] == 'Diving Header') {
-                dict[1]['count'] += 1
-            }
-            if (data[i]['technique']['name'] == 'Half Volley') {
-                dict[2]['count'] += 1
-                console.log("HERE")
-            }
-            if (data[i]['technique']['name'] == 'Lob') {
-                dict[3]['count'] += 1
-            }
-            if (data[i]['technique']['name'] == 'Normal') {
-                dict[4]['count'] += 1
-            }
-            if (data[i]['technique']['name'] == 'Overhead Kick') {
-                dict[5]['count'] += 1
-            }
-            if (data[i]['technique']['name'] == 'Volley') {
-                dict[6]['count'] += 1
-            }
-        }
-
-        
+            let tech = data[i]['technique']['name']
+            dict[tech] += 1
+        }       
     }
-    console.log(dict)
-    return dict;
+    let aggregate = Object.keys(dict).map(k => ({'key':k, 'count':dict[k]}))
+    return aggregate;
 }

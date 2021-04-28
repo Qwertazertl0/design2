@@ -2,64 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 467 Design 2</title>
-  <meta name="description" content="CS 467 Design 2">
+  <title>CS 467 Final Project</title>
+  <meta name="description" content="CS 467 Final Project">
   <meta name="author" content="Team 11">
-  <link rel="stylesheet" href="App.css">
+  <link rel="stylesheet" href="app.css">
 </head>
-
+<!-- By Divey Anand, Maxwell Jong, Kylie Noonan -->
 <body>
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-  <div id='header'>
-    <h1 class='title'> Soccer: Shots and Passes </h1>
+  <!-- Header -->
+  <div class='header' id='title'>
+    <h1 class='center'> Shots and Passes </h1>
+    <h3 class='center'> A visualization of the motion of soccer </h3>
   </div>
 
-  <div class='center' id='eventHandler'>
-    <text> 
-      Our design helps the viewer visualize shot location and conversion on a regulation sized soccer goal post. <br><br> 
+  <!-- Shot Visualization -->
+  <div id='shot-descript'>
+    <p class='center'><span class='bold'>Shots and Goals</span></p>
+    <p>
+      &emsp;This design visualizes the spatial layout of attempted shots and their conversion to goals on a regulation sized soccer goal post. Begin by selecting a team. All data is displayed by default and can be further filtered by competition season and shot type.
+    </p>
+    <div class='flex-container'>
+      <p class='shot-legend'>
+        Each shot is denoted by a point drawn on the goalpost. <br><br>
 
-      Each shot is denoted by a point drawn on the goalpost. <br> 
-      <span style="color: #ff0000; text-decoration: underline">Red</span> points are used to visualize shots that ended up in goal, while <br> 
-      <span style="color: #222222; text-decoration: underline"">Black</span> points are used for shots that were saved or were off-target. <br><br> 
-      
-      The <span style="text-decoration: underline"">opacity</span> of a point denotes its xG statistic. xG, or eXpectedGoals, is a popular metric used to measure the likelihood of scoring from a shot. <br> 
-      Easier chances have higher xG (more solid), while harder chances have lower xG (more transparent).<br><br> 
-
-      You can start by selecting a team. By default all available data is displayed, but you can choose to filter based on season (year) and shot type. 
-      <br><br> 
-      The chart on the right corresponds with the team/season/shot type chosen and shows the number of shots that have certain characteristics. <br><br>
-      Time = minute interval that the shot was made during the game
-      <br><br>
-      Technique = how the shot was made
-      <br><br>
-      Body Part =  what part of a body was used to make the shot
-
-
-    </text>
-    
-    <br>
-    <br>
+        <span class='red'>Red</span> points denote shot attempts that ended up in goal, while <br> 
+        <span class='bold'>Black</span> points denote attempts that were blocked or off-target. <br> 
+        <span class='faint'>Opacity</span> denotes a shot's xG (eXpectedGoals) statistic, a popular metric used to measure the likelihood of scoring. Easier shots have high xG and appear more solid, while harder shots have lower xG and appear more transparent.
+      </p>
+      <p class='shot-legend'>
+        The barchart on the right displays analytics for the selected data. <br><br>
+        <span class='bold'>Time</span>: 15-minute interval during which successful goals were made
+        <br>
+        <span class='bold'>Technique</span>: How shots were made (Backheel, Volley, etc.)
+        <br>
+        <span class='bold'>Body Part</span>:  Which body part was used to make shot attempts
+      </p>
+    </div>
   </div>
 
-  <div class= "flex-container" id= 'first'>
+  <div class="flex-container" id='shot-viz'>
     <div>
-      <svg width="840" height="427" id='goal'>
-        <image href="assets/goal_image.png" height="427" width="840" opacity=".4"/>
+      <svg width="530" height="320" id='goal' preserveAspectRatio="xMidYMid slice" viewBox="0 0 630 320">
+        <image href="assets/goal_image.png" width="630" height="320" opacity=".4" />
       </svg>    
     </div>
 
     <div>
-      <div class= 'flex-container' id = 'button'>
-        <input type="radio" id="time" name="gender" value="male">
-        <label for='Time'>Time</label>
-        <input type="radio" id="technique" name="gender" value="female">
-        <label for="Technique">Technique</label>
-        <input type="radio" id="bodypart" name="gender" value="female">
-        <label for="BodyPart">Body Part</label>
+      <div class='flex-container' id='selector'>
+        <input type="radio" id="time" name="category"><label for='Time'>Time&emsp;</label>
+        <input type="radio" id="technique" name="category"><label for="Technique">Technique&emsp;</label>
+        <input type="radio" id="bodypart" name="category"><label for="BodyPart">Body Part</label>
       </div>
-      <svg width="840" height="427" id='barchart'></svg>
+      <svg width="520" height="304" id='barchart'></svg>
     </div>
   </div>
 
@@ -74,7 +71,13 @@
       <select id="type-sel"></select>
     </h2>
   </div>
+  <script src="shots.js"></script>
 
+  <!-- Passes Visualization -->
+
+  <!-- Assists Visualization -->
+
+  <!-- Data Logo and Source -->
   <div class='center' id='logo'>
     <br><br>
     <h6 style='margin:0px;'> Powered by </h6>
@@ -89,6 +92,5 @@
     </text>
   </div>
   
-  <script src="shots.js"></script>
 </body>
 </html>
