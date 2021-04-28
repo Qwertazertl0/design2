@@ -17,7 +17,7 @@
 <body>
   <!-- Header -->
   <div class='header' id='title'>
-    <h1 class='center'> Shots and Passes </h1>
+    <h1 class='center'> CS 467: Final Project </h1>
     <h3 class='center'> A visualization of the motion of soccer </h3>
   </div>
 
@@ -25,7 +25,7 @@
   <div id='shot-descript'>
     <p class='center subtitle'><span class='bold'>Shots and Goals</span></p>
     <p class='explain'>
-      &emsp;This design visualizes the spatial layout of attempted shots and their conversion to goals on a regulation sized soccer goal post. Begin by selecting a team. All data is displayed by default and can be further filtered by competition season and shot type.
+      &emsp;This design visualizes the spatial layout of attempted shots and their conversion to goals on a regulation sized soccer goal post. Begin by selecting a team. All team data is displayed by default and can be further filtered by competition season and shot type.
     </p>
     <div class='flex-container'>
       <p class='shot-legend'>
@@ -77,21 +77,22 @@
   <script src="shots.js"></script>
 
   <!-- Passes Header -->
+  <br><br>
   <div id='shot-descript'>
     <p class='center subtitle'><span class='bold'>Passes and Assists</span></p>
     <p class='explain'>
-      &emsp;These designs visualize the spatial layout of
+      &emsp;These designs visualize the spatial distribution of passes and assists over the pitch. Assists in this context refer to passes right before a shot attempt, whether the attempt leads to a goal or not. The pitch is a regulation-sized 120-by-80 yard field.
     </p>
   </div>
 
   <!-- Passes Visualization -->
   <div id="passes-component" class='flex-container'>
     <div id="passes-explain" style='width:459px;margin-top:5%;'>
-      <h2 class='center'>
-        Aggregated Passes
-      </h2>
-      <p class='explain'>
-        &emsp;[Explanation]
+      <p class='center' style='font-size: 12pt;'><span class='bold'>Aggregated Passes</span></p>
+      <p class='descript'>
+        &emsp;In any particular match, each team will make several hundred passes. In this visualization, passes are spatially aggregated over an entire season via K-Means clustering. The number of matches aggregated is noted above the pitch. Each aggregate pass represents a cluster of similar passes, and is represented by a tapered line, with start and end points corresponding to the thin and thick ends respectively. Thicker and darker lines represent more common passes. <br><br>
+        
+        Each cluster is also colored by how likely the pass is <span class='blue'>complete</span> or <span class='red'>incomplete</span>. Use the filters to focus on passes of a certain length or passes that more or less likely to be successfully received.
       </p>
     </div>
 

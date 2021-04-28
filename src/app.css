@@ -50,6 +50,11 @@ text.axis-labels {
   text-indent: 2em;
 }
 
+.descript {
+  font-size: 11pt;
+  text-indent: 2em;
+}
+
 .flex-container {
   display: flex;
   justify-content: center;
@@ -77,6 +82,11 @@ text.axis-labels {
 
 .red {
   color: #ff0000; 
+  font-weight: bold;
+}
+
+.blue {
+  color: #0000ff; 
   font-weight: bold;
 }
 
