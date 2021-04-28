@@ -3,7 +3,7 @@ body {
 }
 
 p {
-  font-size: 12pt;
+  font-size: 12px;
 }
 
 select {
@@ -41,6 +41,15 @@ text.axis-labels {
   text-align: center;
 }
 
+.subtitle {
+  font-size: 1.2em;
+}
+
+.explain {
+  font-size: 12pt;
+  text-indent: 2em;
+}
+
 .flex-container {
   display: flex;
   justify-content: center;
@@ -56,6 +65,14 @@ text.axis-labels {
 
 .dropdown-label {
   padding: 10px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.agg-label {
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 .red {

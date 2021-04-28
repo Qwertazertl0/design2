@@ -6,12 +6,15 @@
   <meta name="description" content="CS 467 Final Project">
   <meta name="author" content="Team 11">
   <link rel="stylesheet" href="app.css">
+  <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+         rel = "stylesheet">
+
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 </head>
 <!-- By Divey Anand, Maxwell Jong, Kylie Noonan -->
 <body>
-  <script src="https://d3js.org/d3.v6.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
   <!-- Header -->
   <div class='header' id='title'>
     <h1 class='center'> Shots and Passes </h1>
@@ -20,8 +23,8 @@
 
   <!-- Shot Visualization -->
   <div id='shot-descript'>
-    <p class='center'><span class='bold'>Shots and Goals</span></p>
-    <p>
+    <p class='center subtitle'><span class='bold'>Shots and Goals</span></p>
+    <p class='explain'>
       &emsp;This design visualizes the spatial layout of attempted shots and their conversion to goals on a regulation sized soccer goal post. Begin by selecting a team. All data is displayed by default and can be further filtered by competition season and shot type.
     </p>
     <div class='flex-container'>
@@ -73,7 +76,57 @@
   </div>
   <script src="shots.js"></script>
 
+  <!-- Passes Header -->
+  <div id='shot-descript'>
+    <p class='center subtitle'><span class='bold'>Passes and Assists</span></p>
+    <p class='explain'>
+      &emsp;These designs visualize the spatial layout of
+    </p>
+  </div>
+
   <!-- Passes Visualization -->
+  <div id="passes-component" class='flex-container'>
+    <div id="passes-explain" style='width:459px;margin-top:5%;'>
+      <h2 class='center'>
+        Aggregated Passes
+      </h2>
+      <p class='explain'>
+        &emsp;[Explanation]
+      </p>
+    </div>
+
+    <div id="passes-viz">
+      <div id="dropdowns" class="flex-container">
+        <h2 class="dropdown-label"> Team <br>
+          <select id="passes-team-sel"></select>
+        </h2>
+        <h2 class="dropdown-label"> Season <br>
+          <select id="passes-season-sel"></select>
+        </h2>
+      </div>
+      <p id='aggregate-number' class='agg-label'></p>
+    
+      <div id='eventHandler' class='center'>    
+        <svg width="459" height="310" id='field-aggregate'>
+          <image href="../src/assets/pitch.svg" opacity='0.4'>
+        </svg>
+
+        <div id='length-slider' style='margin-left: 30px; margin-right: 35px;'></div>
+        <div class='flex-container' style="justify-content: space-between; margin-left: 30px; margin-right: 35px;">
+          <p>Short</p>
+          <p style='text-align: center;'>Pass Length Filter</p>
+          <p>Long</p>
+        </div>
+      </div>
+    </div>
+
+    <div id='passes-slider' style='margin-top: 109px;'>
+      <div id='complete-slider'></div>
+    </div>
+    <p style="margin-top: 109px; margin-bottom: 90px; text-align: center; writing-mode: vertical-lr;">Pass Completion Filter</p>
+  </div>
+
+  <script src="passes.js"></script>
 
   <!-- Assists Visualization -->
 

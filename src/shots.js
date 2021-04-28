@@ -39,7 +39,8 @@ function encodeOpacity(shot) { return shot['statsbomb_xg']; }
 
 function updateShots() {
     let data = selectData()
-    const svg = d3.select("svg");
+    const svg = d3.select("svg#goal");
+    console.log(data)
     svg.selectAll("circle")
         .data(data)
         .join(
@@ -74,9 +75,9 @@ function updateShots() {
 
 function init() {
     // Initialize barchart
-    $("#time").on('click', updateShots)
-    $("#technique").on('click', updateShots)
-    $("#bodypart").on('click', updateShots)
+    $("#time").on('click', function() { updateBarchart(selectData()) })
+    $("#technique").on('click', function() { updateBarchart(selectData()) })
+    $("#bodypart").on('click', function() { updateBarchart(selectData()) })
     $("#time")[0].checked = true
     baseBarChart()
 
@@ -233,6 +234,7 @@ function updateBarchart(data) {
     clearAxes()
     let aggregateData = aggregate(data, mode)
     let maxnumber = Math.max(...aggregateData.map(d => d['count']))
+    maxnumber = Math.max(1, maxnumber)
     yForScale = buildYScale(svg, maxnumber)
     buildYAxis(svg)
     addXAxisLabel(svg, X_LABELS[mode])
