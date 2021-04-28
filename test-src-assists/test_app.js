@@ -6,58 +6,51 @@ const bottomRightX = 437;
 const bottomRightY = 290;
 
 window.addEventListener("load", init);
-var passData;
+var assistData;
 var xScale, yScale;
 var widthScale, colorScale;
 
 function selectData() {
-    let season = $("#passes-season-sel").val();
+    let season = $("#assists-season-sel").val();
     console.log(season)
-    return passData[season]
+    return assistData[season]
 }
 
-function getStartPoint(pass) {
-    let start = pass['start_location'];
-    return [xScale(start[0]), yScale(start[1])];
+function getStartX(pass) {
+    let start_x = pass['start_x'];
+    return xScale(start_x);
 }
-function getEndPoint(pass) { 
-    let end = pass['end_location'];
-    return [xScale(end[0]), yScale(end[1])];
-}
-function encodeColor(pass) {
-    return colorScale(pass['complete']); // TODO
-}
-function encodeOpacity(pass) { return pass['count']; }
 
-function updatePasses() {
+function getStartY(pass) {
+    let start_y = pass['start_y'];
+    return yScale(start_y);
+}
+
+function updateAssists() {
     let data = selectData();
-    let maxClusterSize = data.map(p => p['count']).reduce((x,y) => x > y ? x : y);
-    let line = d3.line();
-    widthScale = d3.scaleLinear()
-        .domain(d3.extent(data.map(p => p['count'])))
-        .range([1, 2.5]);
+    console.log(data)
     
     const svg = d3.select("svg");
-    svg.selectAll("path")
+    
+    svg.selectAll("circle")
         .data(data)
         .join(
             enterSelection => {
-                enterSelection.append("path")
-                    .attr("d", pass => line([getStartPoint(pass), getEndPoint(pass)]))
-                    .attr("opacity", 0)
-                    .attr("stroke", pass => encodeColor(pass))
-                    .attr("stroke-width", pass => widthScale(pass['count']))
+                enterSelection.append("circle")
+                    .attr("cx", pass => getStartX(pass))
+                    .attr("cy", pass => getStartY(pass))
+                    .attr("r", 3)
+                    .attr("fill", "black")
                     .transition()
                         .duration(500)
-                        .attr("opacity", pass => encodeOpacity(pass) / maxClusterSize)
             },
             updateSelection => {
                 updateSelection.transition()
-                    .duration(100)
-                    .attr("d", pass => line([getStartPoint(pass), getEndPoint(pass)]))
-                    .attr("stroke", pass => encodeColor(pass))
-                    .attr("stroke-width", pass => widthScale(pass['count']))
-                    .attr("opacity", pass => encodeOpacity(pass) / maxClusterSize)
+                    .duration(200)
+                    .attr("cx", pass => getStartX(pass))
+                    .attr("cy", pass => getStartY(pass))
+                    .attr("r", 3)
+                    .attr("fill", "black")
             },
             exitSelection => {
                 exitSelection.transition()
@@ -80,23 +73,24 @@ function init() {
         .range(["red", "blue"])
 
     // data loading and handling
-    d3.json('http://localhost:12345/data/passes_barcelona_aggregate.json')
+    d3.json('http://localhost:12345/data/assists_barcelona_clean.json')
         .then(function(data) {
             console.log(data);
-            passData = data;
+            assistData = data;
 
             // Populate dropdowns
             let seasons = Object.keys(data);
-            $("#passes-team-sel").append(new Option('Barcelona', 'Barcelona'));
+            $("#assists-team-sel").append(new Option('Barcelona', 'Barcelona'));
             seasons.sort().forEach(function(seasonOption) {
-                $("#passes-season-sel").append(new Option(seasonOption, seasonOption))
+                $("#assists-season-sel").append(new Option(seasonOption, seasonOption))
+                $("#assists-season-sel").val("La Liga \(2019/2020\)")
             });
             // Set-up Handlers
-            $("#passes-season-sel").on('change', function(event) {
-                updatePasses()
+            $("#assists-season-sel").on('change', function(event) {
+                updateAssists()
             });
 
-            updatePasses()
+            updateAssists()
         })
         .catch(function(err) {
             console.log(err);
