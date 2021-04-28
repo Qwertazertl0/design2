@@ -45,7 +45,7 @@
           <div class="help-tip">
             <p>
               <span class='bold'>Backheel</span>: A shot taken with the heel <br>
-              <span class='bold'>Volley</span>: Ball never touched the goal prior to shot <br>
+              <span class='bold'>Volley</span>: Ball never touched the ground prior to shot <br>
               <span class='bold'>Diving Header</span>: Ball struck near ground level by head of a diving player <br>
               <span class='bold'>Lob</span>: Shot with high arc trajectory to pass over opposition players <br>
               <span class='bold'>Half Volley</span>: Contact with ball made off the ground after a bounce <br>
@@ -105,7 +105,7 @@
       <p class='descript'>
         &emsp;In any particular match, each team will make several hundred passes. In this visualization, passes are spatially aggregated over an entire season via K-Means clustering. The number of matches aggregated is noted above the pitch. Each aggregate pass represents a cluster of similar passes, and is represented by a tapered line, with start and end points corresponding to the thin and thick ends respectively. Thicker and darker lines represent more common passes. <br><br>
         
-        Each cluster is also colored by how likely the pass is <span class='blue'>complete</span> or <span class='red'>incomplete</span>. Use the filters to focus on passes of a certain length or passes that more or less likely to be successfully received.
+        Each cluster is also colored by how often the pass is <span class='blue'>complete</span> or <span class='red'>incomplete</span>. Use the filters to focus on passes of a certain length or passes that more or less likely to be successfully received.
       </p>
     </div>
 
@@ -187,8 +187,9 @@
     </svg>
     <br><br>
     <text style="font-size:11px"> 
-      Data is provided by the <a href=https://github.com/statsbomb/open-data>StatsBomb Open Data repository</a>, a highly annotated database of soccer matches. For the purposes of this visualization, the data presented has been first filtered, cleaned, and aggregated <br>
-      The user should note that the free, open dataset is purposely limited by StatsBomb and may not contain complete data for any team or league <br>
+      Data is provided by the <a href=https://github.com/statsbomb/open-data>StatsBomb Open Data repository</a>, a highly annotated database of select soccer matches. Learn more about StatsBomb and their data collection <a href=https://statsbomb.com>here</a>. <br>
+      For the purposes of this visualization, the data presented has been first filtered, cleaned, and aggregated by attributes of interest. <br>
+      The user should note that this dataset is purposely limited by StatsBomb and may not contain complete data for any team or league. <br>
     </text>
   </div>
 </body>
