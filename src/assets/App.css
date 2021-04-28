@@ -28,7 +28,7 @@ select {
 .flex-container {
   display: flex;
   justify-content: center;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .dropdown-label {
