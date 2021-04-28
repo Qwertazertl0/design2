@@ -100,7 +100,7 @@ function updateAssists() {
                     .attr("fill", "black")
                     .attr("fill-opacity","0")
                     .style("stroke","black")
-                    .style("stroke-width","1px")
+                    .style("stroke-width","1.5px")
                     .transition()
                         .duration(500)
             },
@@ -113,7 +113,7 @@ function updateAssists() {
                     .attr("fill", "black")
                     .attr("fill-opacity","0")
                     .style("stroke","black")
-                    .style("stroke-width","1px")
+                    .style("stroke-width","1.5px")
             },
             exitSelection => {
                 exitSelection.transition()

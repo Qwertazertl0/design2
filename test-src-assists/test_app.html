@@ -21,9 +21,19 @@
         <h2 class='center'>
           Assist Heatmap
         </h2>
-        <p class='explain'>
-          &emsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
+        <div class='explain'>
+          <text> 
+            This visualization helps the viewer visualize assist locations on a regulation sized soccer pitch. <br><br> 
+      
+            An assist is commonly understood to be the last pass to the scorer of a goal. Each assist is denoted by a ring drawn on the pitch. <br> <br> 
+            
+            The pitch is divided into a 6x3 grid with the central strip as wide as the six yard box. Each cell of the grid represents a zone. <br><br>
+
+            The color intensity (in <span style="color: #ff0000; text-decoration: underline">red</span>) of a zone represents the frequency of assists that orginated from that zone. <br><br>
+      
+            You can start by selecting a season. By default the most recently available data from La Liga (2019/20) is displayed. 
+          </text>
+        </div>
       </div>
 
       <div id="assists-viz">
@@ -38,10 +48,12 @@
       
       <div id='eventHandler' class='center'>    
         <svg width="459" height="310" id='field-aggregate'>
-          <image href="../src/assets/pitch.svg" opacity='0.4'>
+          <image href="../src/assets/pitch.svg" opacity='1'>
           <!-- <rect width="459" height="310" style="fill:none;stroke:rgb(0,0,0)"/> -->
         </svg>
       </div>
+
+
     </div>
   </div>
 
