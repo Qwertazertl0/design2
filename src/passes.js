@@ -37,7 +37,7 @@ function selectDataPasses() {
     lengthScalePasses = d3.scaleLinear().domain([0,100])
         .range(d3.extent(seasonData.map(p => p['length'])))
     let noun = N_DICT[season] > 1 ? ' matches' : ' match'
-    $("#aggregate-number").text('Aggregate over ' + N_DICT[season] + noun)
+    $("#aggregate-number-passes").text('Aggregate over ' + N_DICT[season] + noun)
     return seasonData
 }
 
@@ -110,6 +110,12 @@ function updatePasses(data) {
 }
 
 function initPasses() {
+    // $("#assists-season-sel").change(function() {
+    //     $("#passes-season-sel").val(this.value);
+    //     let data = selectDataPasses();
+    //     updatePasses(data)
+    // });
+
     // data to SVG coordinate transforms
     xScalePasses = d3.scaleLinear()
         .domain([0, 120])
@@ -163,6 +169,8 @@ function initPasses() {
             seasons.sort().forEach(function(seasonOption) {
                 $("#passes-season-sel").append(new Option(seasonOption, seasonOption))
             });
+            // $("#passes-season-sel").val("La Liga \(2019/2020\)")
+            
             // Set-up Handlers
             $("#passes-season-sel").on('change', function(event) {
                 let data = selectDataPasses();

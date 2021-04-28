@@ -118,7 +118,7 @@
           <select id="passes-season-sel"></select>
         </h2>
       </div>
-      <p id='aggregate-number' class='agg-label'></p>
+      <p id='aggregate-number-passes' class='agg-label'></p>
     
       <div id='eventHandler' class='center'>    
         <svg width="459" height="310" id='field-aggregate'>
@@ -152,15 +152,8 @@
         <h2 class="dropdown-label"> Season <br>
           <select id="assists-season-sel"></select>
         </h2>
-        <!-- <script>
-          $("#assists-season-sel").change(function() {
-            $("#passes-season-sel").val(this.value);
-          });
-          $("#passes-season-sel").change(function() {
-            $("#assists-season-sel").val(this.value);
-          });
-        </script> -->
       </div>
+      <p id='aggregate-number-assists' class='agg-label'></p>
     
       <div id='eventHandler' class='center'>    
         <svg width="459" height="310" id='field-assist'>
@@ -172,11 +165,15 @@
     <div id="assists-explain" style='width:459px;margin-top:5%;padding-left:5%;'>
       <p class='center' style='font-size: 12pt;'><span class='bold'>Assists Heatmap</span></p>
       <p class='descript'>
-        &emsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        &emsp;An assist is commonly understood to be the last pass to the scorer of a goal. Each assist is denoted by a ring drawn on the pitch. The pitch is divided into a 6x3 grid commonly used by coaches (see for example, <a href=https://spielverlagerung.com/glossary/pitch-zones/zone-14>Zone 14</a>) with the central strip as wide as the six yard box. Each cell of the grid represents a zone. <br><br>
+
+        The color <span class='red'>intensity</span> of a zone represents the frequency of assists that orginated from that zone. <br><br>
       </p>
     </div>
   </div>
   <script src="assists.js"></script>
+
+  
 
   <!-- Data Logo and Source -->
   <div class='center' id='logo'>
