@@ -35,3 +35,13 @@ select {
   padding: 10px;
 }
 
+.left{
+  text-align: left;
+  
+}
+
+button {
+  position:absolute;
+  top: 100; /*[wherever you want it]*/
+  left:100; /*[wherever you want it]*/
+}
