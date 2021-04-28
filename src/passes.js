@@ -27,14 +27,14 @@ const N_DICT = {'Champions League (2008/2009)': 1,
 window.addEventListener("load", initPasses);
 var passData, seasonData;
 var xScalePasses, yScalePasses;
-var widthScale, colorScale, lengthScale, opacityScale;
+var widthScalePasses, colorScalePasses, lengthScalePasses, opacityScalePasses;
 var completeFilter = [0, 100];
 var lengthFilter = [0, 100];
 
 function selectDataPasses() {
     let season = $("#passes-season-sel").val();
     seasonData = passData[season]
-    lengthScale = d3.scaleLinear().domain([0,100])
+    lengthScalePasses = d3.scaleLinear().domain([0,100])
         .range(d3.extent(seasonData.map(p => p['length'])))
     let noun = N_DICT[season] > 1 ? ' matches' : ' match'
     $("#aggregate-number").text('Aggregate over ' + N_DICT[season] + noun)
@@ -55,7 +55,7 @@ function getPath(pass) {
     let start = pass['start_location'];
     let end = pass['end_location'];
     let passVector = [xScalePasses(end[0])-xScalePasses(start[0]), yScalePasses(end[1])-yScalePasses(start[1])];
-    let width = widthScale(pass['count']);
+    let width = widthScalePasses(pass['count']);
     let line = d3.line();
 
     let taper = [xScalePasses(start[0]), yScalePasses(start[1])]
@@ -66,17 +66,17 @@ function getPath(pass) {
     return line([taper, getThickPoint(end, passVector, width, 1),
                  shortTaper, getThickPoint(end, passVector, width, -1)])
 }
-function encodeColorPasses(pass) { return colorScale(pass['complete']); }
+function encodeColorPasses(pass) { return colorScalePasses(pass['complete']); }
 function encodeOpacityPasses(pass) { return pass['count']; }
 
 function updatePasses(data) {
     let maxClusterSize = data.map(p => p['count']).reduce((x,y) => x > y ? x : y);
-    widthScale = d3.scaleLinear()
+    widthScalePasses = d3.scaleLinear()
         .domain(d3.extent(data.map(p => p['count'])))
         .range([1, 2]);
     
     data = data.filter(p => 
-        p['length'] >= lengthScale(lengthFilter[0]) & p['length'] <= lengthScale(lengthFilter[1]))
+        p['length'] >= lengthScalePasses(lengthFilter[0]) & p['length'] <= lengthScalePasses(lengthFilter[1]))
     data = data.filter(p => 
         p['complete'] >= completeFilter[0] / 100 & p['complete'] <= completeFilter[1] / 100)
     
@@ -91,14 +91,14 @@ function updatePasses(data) {
                     .attr("fill", pass => encodeColorPasses(pass))
                     .transition()
                         .duration(200)
-                        .attr("opacity", pass => opacityScale(encodeOpacityPasses(pass) / maxClusterSize))
+                        .attr("opacity", pass => opacityScalePasses(encodeOpacityPasses(pass) / maxClusterSize))
             },
             updateSelection => {
                 updateSelection.transition()
                     .duration(200)
                     .attr("d", pass => getPath(pass))
                     .attr("fill", pass => encodeColorPasses(pass))
-                    .attr("opacity", pass => opacityScale(encodeOpacityPasses(pass) / maxClusterSize))
+                    .attr("opacity", pass => opacityScalePasses(encodeOpacityPasses(pass) / maxClusterSize))
             },
             exitSelection => {
                 exitSelection.transition()
@@ -117,9 +117,9 @@ function initPasses() {
     yScalePasses = d3.scaleLinear()
         .domain([0, 80])
         .range([topLeftYPasses, bottomRightYPasses]);
-    colorScale = d3.scaleLinear().domain([0,1])
+    colorScalePasses = d3.scaleLinear().domain([0,1])
         .range(["red", "blue"])
-    opacityScale = d3.scaleLinear().domain([0,1])
+    opacityScalePasses = d3.scaleLinear().domain([0,1])
         .range([0.05, 1])
 
     // setup sliders and restyle
@@ -140,14 +140,14 @@ function initPasses() {
             let low = ui.values[0];
             let high = ui.values[1];
             $("#complete-slider > div").css('background',
-                'linear-gradient(0deg,' + colorScale(low / 100) + ',' + colorScale(high / 100) + ')') },
+                'linear-gradient(0deg,' + colorScalePasses(low / 100) + ',' + colorScalePasses(high / 100) + ')') },
         stop: function(event, ui) { completeFilter = ui.values; updatePasses(seasonData); }
     });
 
     $("#complete-slider").css('height', '240px');
     $("#complete-slider").css('background', '#dddddd');
     $("#complete-slider > div").css('background',
-        'linear-gradient(0deg,' + colorScale(0) + ',' + colorScale(1) + ')')
+        'linear-gradient(0deg,' + colorScalePasses(0) + ',' + colorScalePasses(1) + ')')
     $("#length-slider").css('background', '#dddddd');
     $("#length-slider > div").css('background', '#000000');
 

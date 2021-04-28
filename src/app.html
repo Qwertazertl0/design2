@@ -94,7 +94,7 @@
   <div id='shot-descript'>
     <p class='center subtitle'><span class='bold'>Passes and Assists</span></p>
     <p class='explain'>
-      &emsp;These designs visualize the spatial distribution of passes and assists over the pitch. Assists in this context refer to passes right before a shot attempt, whether the attempt leads to a goal or not. The pitch is a regulation-sized 120-by-80 yard field.
+      &emsp;These designs visualize the spatial distribution of passes and assists over the pitch. Assists in this context refer to passes right before a shot attempt, whether the attempt leads to a goal or not. The pitch is a regulation-sized 120-by-80 yard field. The selected team's direction of play is to the right.
     </p>
   </div>
 
@@ -143,6 +143,40 @@
   <script src="passes.js"></script>
 
   <!-- Assists Visualization -->
+  <div id="assists-component" class='flex-container'>
+    <div id="assists-viz">
+      <div id="dropdowns" class="flex-container">
+        <h2 class="dropdown-label"> Team <br>
+          <select id="assists-team-sel"></select>
+        </h2>
+        <h2 class="dropdown-label"> Season <br>
+          <select id="assists-season-sel"></select>
+        </h2>
+        <!-- <script>
+          $("#assists-season-sel").change(function() {
+            $("#passes-season-sel").val(this.value);
+          });
+          $("#passes-season-sel").change(function() {
+            $("#assists-season-sel").val(this.value);
+          });
+        </script> -->
+      </div>
+    
+      <div id='eventHandler' class='center'>    
+        <svg width="459" height="310" id='field-assist'>
+          <image href="assets/pitch.svg" opacity='0.4'>
+        </svg>
+      </div>
+    </div>
+
+    <div id="assists-explain" style='width:459px;margin-top:5%;padding-left:5%;'>
+      <p class='center' style='font-size: 12pt;'><span class='bold'>Assists Heatmap</span></p>
+      <p class='descript'>
+        &emsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+    </div>
+  </div>
+  <script src="assists.js"></script>
 
   <!-- Data Logo and Source -->
   <div class='center' id='logo'>
@@ -151,13 +185,11 @@
     <svg width="200" height="30">
       <image href="assets/statsbomb-logo.jpg" width="200" height="30"/>
     </svg>
-    
     <br><br>
-    
     <text style="font-size:11px"> 
-      The user should note that the dataset is incomplete and may not contain data for all shots taken by their favorite team.
+      Data is provided by the <a href=https://github.com/statsbomb/open-data>StatsBomb Open Data repository</a>, a highly annotated database of soccer matches. For the purposes of this visualization, the data presented has been first filtered, cleaned, and aggregated <br>
+      The user should note that the free, open dataset is purposely limited by StatsBomb and may not contain complete data for any team or league <br>
     </text>
   </div>
-  
 </body>
 </html>

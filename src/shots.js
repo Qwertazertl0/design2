@@ -1,17 +1,17 @@
 "use strict";
 
-const topLeftX = 93;
-const topLeftY = 47;
-const bottomRightX = 535;
-const bottomRightY = 285;
+const topLeftXShots = 93;
+const topLeftYShots = 47;
+const bottomRightXShots = 535;
+const bottomRightYShots = 285;
 const NO_TEAM_MSG = "(Select Team First)"
 const SHOT_TYPES = ['All', 'Corner', 'Free Kick', 'Open Play', 'Penalty', 'Kick Off']
 
-window.addEventListener("load", init);
+window.addEventListener("load", initShots);
 var shotData;
-var xScale, yScale;
+var xScaleShots, yScaleShots;
 
-function selectData() {
+function selectDataShots() {
     let team = $("#team-sel").val();
     if (team == '--') { return []; }
     let season = $("#season-sel").val();
@@ -38,7 +38,7 @@ function encodeColor(shot) {
 function encodeOpacity(shot) { return shot['statsbomb_xg']; }
 
 function updateShots() {
-    let data = selectData()
+    let data = selectDataShots()
     const svg = d3.select("svg#goal");
     // console.log(data)
     svg.selectAll("circle")
@@ -46,8 +46,8 @@ function updateShots() {
         .join(
             enterSelection => {
                 enterSelection.append("circle")
-                    .attr("cx", d => xScale(getXCoord(d['end_location'])))
-                    .attr("cy", d => yScale(getYCoord(d['end_location'])))
+                    .attr("cx", d => xScaleShots(getXCoord(d['end_location'])))
+                    .attr("cy", d => yScaleShots(getYCoord(d['end_location'])))
                     .attr("r", 5)
                     .attr("opacity", 0)
                     .transition()
@@ -58,8 +58,8 @@ function updateShots() {
             updateSelection => {
                 updateSelection.transition()
                     .duration(500)
-                    .attr("cx", d => xScale(getXCoord(d['end_location'])))
-                    .attr("cy", d => yScale(getYCoord(d['end_location'])))
+                    .attr("cx", d => xScaleShots(getXCoord(d['end_location'])))
+                    .attr("cy", d => yScaleShots(getYCoord(d['end_location'])))
                     .attr("opacity", d => encodeOpacity(d))
                     .attr("fill", d => encodeColor(d))
             },
@@ -73,21 +73,21 @@ function updateShots() {
     updateBarchart(data)
 }
 
-function init() {
+function initShots() {
     // Initialize barchart
-    $("#time").on('click', function() { updateBarchart(selectData()) })
-    $("#technique").on('click', function() { updateBarchart(selectData()) })
-    $("#bodypart").on('click', function() { updateBarchart(selectData()) })
+    $("#time").on('click', function() { updateBarchart(selectDataShots()) })
+    $("#technique").on('click', function() { updateBarchart(selectDataShots()) })
+    $("#bodypart").on('click', function() { updateBarchart(selectDataShots()) })
     $("#time")[0].checked = true
     baseBarChart()
 
     // data to SVG coordinate transforms
-    xScale = d3.scaleLinear()
+    xScaleShots = d3.scaleLinear()
         .domain([36, 44])
-        .range([topLeftX, bottomRightX]);
-    yScale = d3.scaleLinear()
+        .range([topLeftXShots, bottomRightXShots]);
+    yScaleShots = d3.scaleLinear()
         .domain([2.67, 0])
-        .range([topLeftY, bottomRightY]);
+        .range([topLeftYShots, bottomRightYShots]);
 
     // data loading and handling
     d3.json('http://localhost:12345/data/shots_v3.json')
