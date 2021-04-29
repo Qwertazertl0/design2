@@ -163,7 +163,7 @@ function updateZones() {
         .domain([ 0, d3.max(selZoneData, function(d) { return d.count; })] );
     
     var xAxis = d3.axisBottom()
-        .ticks(2)
+        .ticks(7)
         .scale(legendScale);
     
     legendsvg.append("g")
