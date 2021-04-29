@@ -169,7 +169,7 @@ function initPasses() {
             seasons.sort().forEach(function(seasonOption) {
                 $("#passes-season-sel").append(new Option(seasonOption, seasonOption))
             });
-            // $("#passes-season-sel").val("La Liga \(2019/2020\)")
+            $("#passes-season-sel").val("La Liga \(2019/2020\)")
             
             // Set-up Handlers
             $("#passes-season-sel").on('change', function(event) {

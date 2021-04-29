@@ -100,6 +100,76 @@ function updateZones() {
                     .remove();
             }
         );
+        
+    // Remove old legend 
+    svg.select("g.legendWrapper").remove();
+
+    // Redraw legend
+    var svg_width = 459
+
+    var countScale = d3.scaleLinear()
+        .domain([0, d3.max(selZoneData, function(d) {return d.count; })])
+        .range([0, svg_width])
+
+    // Calculate the variables for the temp gradient
+    var numStops = 5;
+    var countRange = countScale.domain();
+    countRange[2] = countRange[1] - countRange[0];
+
+    var countPoint = [];
+    for (var i = 0; i < numStops; i++) {
+        countPoint.push(i * countRange[2]/(numStops-1) + countRange[0]);
+    }
+
+    svg.append("defs")
+        .append("svg:linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "0%").attr("y1", "0%")
+        .attr("x2", "100%").attr("y2", "0%")
+        .selectAll("stop") 
+        .data(d3.range(numStops))                
+        .enter().append("stop") 
+        .attr("offset", function(d,i) { 
+            return countScale(countPoint[i])/svg_width;
+        })   
+        .attr("stop-color", function(d,i) { 
+            return cellColor(countPoint[i]); 
+        });
+    
+    var legendWidth = Math.min(svg_width*0.8, 400);
+    var legendsvg = svg.append("g")
+        .attr("class", "legendWrapper")
+        .attr("transform", "translate(" + (svg_width/2) + "," + 330 + ")");
+
+    //Draw the Rectangle
+    legendsvg.append("rect")
+        .attr("class", "legendRect")
+        .attr("x", -legendWidth/2)
+        .attr("y", 0)
+        .attr("width", legendWidth)
+        .attr("height", 10)
+        .style("fill", "url(#gradient)")
+        .style("opacity", 0.6);
+
+    legendsvg.append("text")
+        .attr("class", "legendTitle")
+        .attr("x", 0)
+        .attr("y", -10)
+        .style("text-anchor", "middle")
+        .text("Number of Assists");
+    
+    var legendScale = d3.scaleLinear()
+        .range([-legendWidth/2, legendWidth/2])
+        .domain([ 0, d3.max(selZoneData, function(d) { return d.count; })] );
+    
+    var xAxis = d3.axisBottom()
+        .ticks(2)
+        .scale(legendScale);
+    
+    legendsvg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + (10) + ")")
+        .call(xAxis)
 }
 
 function updateAssists() {
@@ -119,7 +189,7 @@ function updateAssists() {
                     .attr("fill", "black")
                     .attr("fill-opacity","0")
                     .style("stroke","black")
-                    .style("stroke-width","1px")
+                    .style("stroke-width","1.5px")
                     .transition()
                         .duration(200)
                         .attr("opacity", 1)
@@ -133,7 +203,7 @@ function updateAssists() {
                     .attr("fill", "black")
                     .attr("fill-opacity","0")
                     .style("stroke","black")
-                    .style("stroke-width","1px")
+                    .style("stroke-width","1.5px")
             },
             exitSelection => {
                 exitSelection.transition()
@@ -170,8 +240,8 @@ function init() {
             $("#assists-team-sel").append(new Option('Barcelona', 'Barcelona'));
             seasons.sort().forEach(function(seasonOption) {
                 $("#assists-season-sel").append(new Option(seasonOption, seasonOption))
-                $("#assists-season-sel").val("La Liga \(2019/2020\)")
             });
+            $("#assists-season-sel").val("La Liga \(2019/2020\)")
             // Set-up Handlers
             $("#assists-season-sel").on('change', function(event) {
                 updateAssists()
