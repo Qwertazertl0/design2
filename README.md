@@ -1,7 +1,7 @@
 # SP21 - CS 467
-Group 11 - Final Project Implementation
+Group 11 - Final Project Implementation: Visualization of Soccer Gameplay
 
-Visualization of Soccer Gameplay
+By Divey Anand, Maxwell Jong, and Kylie Noonan
 
 ## Running the Implementation
 1. Start a local webserver in the root of the of the repository with port 12345. For example, `python3 -m http.server 12345`
